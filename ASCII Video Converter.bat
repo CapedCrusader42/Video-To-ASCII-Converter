@@ -1,7 +1,7 @@
 @echo off
 TITLE Video to ASCII Converter
 
-REM Version 1.1.1
+
 REM video2chars is not owned by me and the original creator of this program can be found here: https://github.com/ryan4yin/video2chars
 
 REM Known Issues:
@@ -14,7 +14,10 @@ REM ============================
 goto welcome
 
 :update
+PATH %PATH%;%UserProfile%\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0
+PATH %PATH%;%UserProfile%\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\Scripts
 pip install video2chars
+pip install --upgrade pip
 exit /b
 
 :welcome
@@ -29,12 +32,11 @@ echo.
 echo *Once you proceed past this page the required software (video2chars) and its dependancies will be installed/updated.*
 echo You will be notified of its completion.
 echo.
-echo If you encounter a WARNING error at the completion of the program use 7th option to change the default directory.
 
 echo.
-set /p=Press the ENTER key to continue...
+set /p=Press any key if you understand the terms above . . .
 echo Please wait...
-call :update || echo Update failed, please contact me at https://github.com/CapedCrusader42 with an explanatino of the error that was provided. && pause >nul && exit
+call :update || echo. && echo Update failed, please contact me at https://github.com/CapedCrusader42 with an explanatino of the error that was provided. && pause >nul && exit
 
 
 REM =============================
@@ -46,28 +48,56 @@ REM =============================
 set file_path=%UserProfile%\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\Scripts
 set file_name=output.mp4
 set fps=24
+REM Programs default FPS is 10 and just makes it look not that great.
 set video_width=
 set start=
 set end=
 set text=
-goto begin
+set file_location=
+set file_location_des=
+set video_width_des=
+set start_des=
+set end_des=
+
+goto file_select
+
+
+:file_select
+cls
+echo *The program video2chars has successfully been installed or updated*
+echo.
+echo Please enter the file directory below of the file you wish to convert.
+echo Be mindful that the formatting is correct or the command will not work.
+echo.
+echo Hint: Press and hold the shift key while right-clicking the file and select the option "Copy file path".
+echo Hint: Then right-click in the command line window to paste.
+echo.
+set /p file=Copy paste the files location here: 
+
+:view
+echo.
+dir %file% /A /Q
+echo.
+
+choice /m "Is this the correct file?"
+if %errorlevel% neq 2 goto begin
+if %errorlevel% neq 1 goto file_select && echo Please reenter the file path. Press any key to continue. && pause >nul
 
 
 :begin
 cls
-echo The program video2chars was successfully installed/updated and you are free to continue.
+
 echo. 
-echo Welcome, please enter the number corresponding to the selections below.
+echo Please enter the number corresponding to the selections below.
 echo *For the default settings or to continue press and enter the 7 key and select which file to convert.*
 echo.
-echo 1.Converted file name
-echo 2.Video FPS (Default 24 fps)
-echo 3.Video width (Default 80, change only if needed. Will dramatically increase render times)
-echo 4.Video length
-REM echo 5.Characters used for the conversion (Optional)
-echo 5.CMD text color
-echo 6.Finalize
-echo 7.Only use this option if you encountered the WARNING error mentioned in the previous screen.
+echo 1.Converted file name (Default, output.mp4)
+echo 2.Video FPS (Default 24 fps, will slightly increase render times)
+echo 3.Video character width (Default 80, will dramatically increase render times)
+echo 4.Video length (Default, full video)
+echo 5.Converted file location (Where to put the finished product)
+echo 6.CMD text color (No real purpose)
+echo 7.Finalize
 echo.
 set /p input0=Response: 
 
@@ -75,10 +105,9 @@ if %input0% equ 1 goto file_name
 if %input0% equ 2 goto fps 
 if %input0% equ 3 goto width 
 if %input0% equ 4 goto clipping 
-REM if %input0% equ 5 goto text 
-if %input0% equ 5 goto color 
-if %input0% equ 6 goto file_select 
-if %input0% equ 7 goto file_path 
+if %input0% equ 5 goto file_location 
+if %input0% equ 6 goto color 
+if %input0% equ 7 goto confirmation 
 echo Invalid selection!
 echo.
 echo Press any key to try again.
@@ -150,13 +179,10 @@ echo "Please make sure that the start time is less than the end time. Press any 
 
 goto begin
 
-REM The reasoning for this selections removal can be found in the top of the program
-
-REM :text
-REM cls
-REM echo Please ONLY enter numbers and symbols for the character that will comprise the render.
-REM set /p text=(Optional and not recommended): 
-REM goto begin
+:file_location
+cls
+set /p "file_location=Enter the full location path to put the file, leave empty for default: "
+goto begin
 
 :color 
 cls
@@ -170,10 +196,10 @@ echo 4. Black/Yellow
 echo.
 set /p "cl=Enter the numbered color here: " || goto begin
 
-if %cl% equ 1 color 70 goto begin
-if %cl% equ 2 color 01 goto begin
-if %cl% equ 3 color 04 goto begin
-if %cl% equ 4 color 06 goto begin
+if %cl% equ 1 color 70 && goto begin
+if %cl% equ 2 color 01 && goto begin
+if %cl% equ 3 color 04 && goto begin
+if %cl% equ 4 color 06 && goto begin
 echo Invalid selection!
 echo.
 echo Press any key to try again.
@@ -182,23 +208,6 @@ cls
 goto color
 
 
-:file_select
-cls
-echo Please enter the file directory below of the file you wish to convert.
-echo Be mindful that the formatting is correct or the command will not work.
-echo.
-echo Hint: Press and hold the shift key while right-clicking the file and select the option "Copy file path".
-echo Hint: Then right-click in the command line window to paste.
-echo.
-set /p file=Copy paste the files location here: 
-goto :confirmation
-
-
-:file_path
-cls
-set file_path=
-goto begin
-
 
 :confirmation
 cls
@@ -206,49 +215,63 @@ echo %start%|findstr /x "[0123456789]*" && set "start=%start%" || set "start=not
 echo %end%|findstr /x "[0123456789]*" && set "end=%end%" || set "end=not configured"
 echo %video_width%|findstr /x "[0123456789]*" && set "video_width=%video_width%" || set "video_width=not configured"
 REM echo %text%|findstr /x "[0123456789~!@#$%^&*()_+}|{":>?<|/\[]';.,=-]*" && set "text=%text%" || set "text=not configured"
-goto confirmation2
-
-:confirmation2
 cls
-echo Are you sure that you wish to save this file with the name of %file_name% and the fps set to %fps%? 
-echo The files starting time in seconds is %start%. The ending time in seconds for this video is %end%. 
-echo The videos characters width is %video_width%.
+goto overview
+
+:overview
+echo Overview
+echo.
+echo name: %file_name% 
+echo fps: %fps%
+echo Start time (in seconds): %start%. 
+echo End time (in seconds): %end%. 
+echo Characters width: %video_width%.
+echo Save location: %file_location%
 REM echo The custom added charactrs to use for this render are %text%.
 echo.
-set /p=Press the ENTER key to continue...
+echo Enter y to continue and n to start over from the beginning.
 
-echo %start%|findstr /x "[0123456789]*" && set "start=--t_start %start%" || set "start="
-echo %end%|findstr /x "[0123456789]*" && set "end=--t_end %end%" || set "end="
-echo %video_width%|findstr /x "[0123456789]*" && set "video_width=--chars_width %video_width%" || set "video_width="
+choice /m "Are you sure that you wish to convert and save the file with the above settings?"
+if %errorlevel% neq 2 goto overview2
+if %errorlevel% neq 1 goto defaults
+
+:overview2
+REM This is the descriptors section
+echo %start%|findstr /x "[0123456789]*" && set "start_des=%start%" || set "start_des=not configured"
+echo %end%|findstr /x "[0123456789]*" && set "end_des=%end%" || set "end_des=not configured"
+echo %video_width%|findstr /x "[0123456789]*" && set "video_width_des=%video_width%" || set "video_width_des=Default (80)"
+echo %file_location%|findstr /x ".*" && set "file_location_des=%file_location%" || set "file_location_des=Default (%file_location%)"
+
+REM Used for the actual outputs
+echo %start%|findstr /x "[0123456789]*" && set "start= --t_start %start%" || set "start="
+echo %end%|findstr /x "[0123456789]*" && set "end= --t_end %end%" || set "end="
+echo %video_width%|findstr /x "[0123456789]*" && set "video_width= --chars_width %video_width%" || set "video_width="
 REM echo %text%|findstr /x "[0123456789]*" && set "text=--pixel %text%" || set "text="
-
+cls
 goto finished
 
 :activate
 cls
-echo Please do not click out of this window as the program will stop working until you click back.
+echo Current Render Settings:
 echo.
-cd %file_path%
-video2chars %video_width% --fps %fps% %start% %end% --output %file_name% %file%
+echo name: %file_name% 
+echo fps: %fps%
+echo Start time (in seconds): %start_des%. 
+echo End time (in seconds): %end_des%. 
+echo Characters width: %video_width_des%.
+echo Save location: %file_location_des%
+echo.
+echo *Please make sure to keep this window is focused as the program will stop working until you click back and press ENTER.*
+echo The program may appear to not be inactive at first. Please wait and the program will start momentarily.
+echo.
+cd %file_location%
+video2chars%video_width% --fps %fps%%start%%end% --output %file_name% %file%
 Exit /B
 
 :finished
-call :activate || echo. && echo Please Re-enter the file path and try again. && echo. && echo Press any key to retry... && pause >nul && goto file_select
+call :activate || echo. && echo Please Re-enter the required information as according to the directions. && echo. && echo Press any key to retry... && pause >nul && goto defaults
 
 :end
-echo The program has finished the installation. Do you want to navigate to the destination folder?
-echo If you select no the program will exit.
-echo.
-set /p check=Enter Y or y to enter the destination folder. Enter N or n to leave the program. 
-setlocal enabledelayedexpansion 
-for /f "delims=YyNn" %%a in ("!check!") do set "check="
-endlocal & set "check=%check%"
-if not defined check (
-        echo Please enter either a Y/y or N/n as a response. && echo. && echo Press any key to retry... && pause >nul && cls
-        goto end
-    )
+choice /m "Installation complete! Do you want to navigate to the %file_name% destination folder?"
+if %errorlevel% neq 2 start "" explorer "%file_location%" && echo. && echo Press any key to exit the program. && pause >nul || echo If you ever somehow get this error please contact me and explain how to replicate it.
 
-if %check%==Y (explorer "%file_path%") && pause >nul
-if %check%==y (explorer "%file_path%") && pause >nul
-if %check%==N (exit)
-if %check%==n (exit)
