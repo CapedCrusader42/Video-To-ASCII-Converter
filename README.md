@@ -10,3 +10,5 @@ At this point, I have most functionalities working and there may be some bug fix
 If there are any errors that you have encountered please reach out and inform me so that I can create the best software I can.
 
 Thank you for trying it out.
+
+*Please check the releases tab to get the most up to date news on the program.*
