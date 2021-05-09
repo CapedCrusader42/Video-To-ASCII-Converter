@@ -11,4 +11,4 @@ If there are any errors that you have encountered please reach out and inform me
 
 Thank you for trying it out.
 
-*Please check the releases tab to get the most up to date news on the program.*
+*Please check the releases tab to get the most up to date news on updates to the program.*
