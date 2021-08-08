@@ -13,9 +13,21 @@ REM ============================
 
 goto welcome
 
+:redirect
+cls
+echo *Python must be installed to use this program.*
+echo Do you wish to be redirected to the Microsoft Store to install Python?
+echo You can of course install python yourself, but I cannot guarantee the program working.
+choice /m "Selecting Yes or No will exit the instant regardless, after installing, reopen this program."
+if %errorlevel% neq 2 python && exit
+if %errorlevel% neq 1 exit
+exit /b
+
 :update
-PATH %PATH%;%UserProfile%\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0
-PATH %PATH%;%UserProfile%\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\Scripts
+PATH %PATH%;%UserProfile%\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0
+PATH %PATH%;%UserProfile%\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\Scripts
+python --version 3>NUL
+if errorlevel 1 call :redirect
 pip install video2chars
 pip install --upgrade pip
 exit /b
@@ -35,8 +47,10 @@ echo.
 
 echo.
 set /p=Press any key if you understand the terms above . . .
+echo.
 echo Please wait...
-call :update || echo. && echo Update failed, please contact me at https://github.com/CapedCrusader42 with an explanatino of the error that was provided. && pause >nul && exit
+echo.
+call :update || echo. && echo Update failed, please contact me at https://github.com/CapedCrusader42 with an explanation of the error that was provided. && pause >nul && exit
 
 
 REM =============================
@@ -53,7 +67,7 @@ set video_width=
 set start=
 set end=
 set text=
-set file_location=
+set file_location=%userprofile%\Desktop\
 set file_location_des=
 set video_width_des=
 set start_des=
@@ -69,10 +83,10 @@ echo.
 echo Please enter the file directory below of the file you wish to convert.
 echo Be mindful that the formatting is correct or the command will not work.
 echo.
-echo Hint: Press and hold the shift key while right-clicking the file and select the option "Copy file path".
-echo Hint: Then right-click in the command line window to paste.
+echo Hint1: Press and hold the shift key while right-clicking the file and select the option "Copy as path".
+echo Hint2: Then right-click in the command line window to paste.
 echo.
-set /p file=Copy paste the files location here: 
+set /p file=Copy and paste the files location here: 
 
 :view
 echo.
@@ -91,11 +105,11 @@ echo.
 echo Please enter the number corresponding to the selections below.
 echo *For the default settings or to continue press and enter the 7 key and select which file to convert.*
 echo.
-echo 1.Converted file name (Default, output.mp4)
+echo 1.Converted file name (Default name "output.mp4")
 echo 2.Video FPS (Default 24 fps, will slightly increase render times)
 echo 3.Video character width (Default 80, will dramatically increase render times)
 echo 4.Video length (Default, full video)
-echo 5.Converted file location (Where to put the finished product)
+echo 5.Converted file location (Where to put the finished product, default Desktop)
 echo 6.CMD text color (No real purpose)
 echo 7.Finalize
 echo.
@@ -181,7 +195,7 @@ goto begin
 
 :file_location
 cls
-set /p "file_location=Enter the full location path to put the file, leave empty for default: "
+set /p "file_location=Enter the full location path to put the file, leave empty for default (user desktop): "
 goto begin
 
 :color 
@@ -229,7 +243,7 @@ echo Characters width: %video_width%.
 echo Save location: %file_location%
 REM echo The custom added charactrs to use for this render are %text%.
 echo.
-echo Enter y to continue and n to start over from the beginning.
+echo Enter Y to continue and N to start over from the beginning.
 
 choice /m "Are you sure that you wish to convert and save the file with the above settings?"
 if %errorlevel% neq 2 goto overview2
