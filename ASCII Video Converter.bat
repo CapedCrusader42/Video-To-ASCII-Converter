@@ -34,11 +34,15 @@ exit /b
 
 :welcome
 echo Welcome to my Video file to ASCII character converter.
-echo The purpose of this program is to allow for the simplistic conversion of a .mp4 file to the ADCII character set.
-echo I claim zero ownership of the software used in this batch file, my only involvement was the creation of this tool.
+echo The purpose of this program is to allow for the simplistic conversion of a .mp4 file to the ASCII character set.
+echo I claim zero ownership of the software converting the file (video2chars).
+echo My only involvement was the creation of this tool.
 echo.
-echo This program ONLY supports using .mp4 file formats.
-echo All setting changes made will only remain in the same terminal session and will not persist once this program is closed.
+echo If you encounter an error at any time please feel free to submit an anonymous bug report here: 
+echo https://forms.gle/hTXMjCSnfYXcVyw29
+echo.
+echo This program ONLY supports using the .mp4 file format.
+echo All settings changed configured will NOT persist after this program is closed.
 echo.
 
 echo *Once you proceed past this page the required software (video2chars) and its dependancies will be installed/updated.*
@@ -50,7 +54,7 @@ set /p=Press any key if you understand the terms above . . .
 echo.
 echo Please wait...
 echo.
-call :update || echo. && echo Update failed, please contact me at https://github.com/CapedCrusader42 with an explanation of the error that was provided. && pause >nul && exit
+call :update || echo. && echo Update failed, please contact me at https://forms.gle/hTXMjCSnfYXcVyw29 with an explanation of the error that was provided. && pause >nul && exit
 
 
 REM =============================
@@ -67,7 +71,7 @@ set video_width=
 set start=
 set end=
 set text=
-set file_location=%userprofile%\Desktop\
+set file_location=%userprofile%\Desktop
 set file_location_des=
 set video_width_des=
 set start_des=
@@ -90,20 +94,19 @@ set /p file=Copy and paste the files location here:
 
 :view
 echo.
-dir %file% /A /Q
+dir %file% /A /Q || echo ERROR, this is not a valid file structure please press any key to retry. && pause >nul && goto file_select
 echo.
 
 choice /m "Is this the correct file?"
 if %errorlevel% neq 2 goto begin
-if %errorlevel% neq 1 goto file_select && echo Please reenter the file path. Press any key to continue. && pause >nul
+if %errorlevel% neq 1 goto file_select && echo The entered file path does not exist. && echo. && echo Please view the hints to make sure that the formatting is correct. Press any key to continue. && pause >nul
 
 
 :begin
 cls
 
-echo. 
 echo Please enter the number corresponding to the selections below.
-echo *For the default settings or to continue press and enter the 7 key and select which file to convert.*
+echo *For the default settings or to continue press and enter the 7 key.*
 echo.
 echo 1.Converted file name (Default name "output.mp4")
 echo 2.Video FPS (Default 24 fps, will slightly increase render times)
@@ -221,8 +224,6 @@ pause >nul
 cls
 goto color
 
-
-
 :confirmation
 cls
 echo %start%|findstr /x "[0123456789]*" && set "start=%start%" || set "start=not configured"
@@ -233,6 +234,7 @@ cls
 goto overview
 
 :overview
+cls
 echo Overview
 echo.
 echo name: %file_name% 
@@ -243,11 +245,31 @@ echo Characters width: %video_width%.
 echo Save location: %file_location%
 REM echo The custom added charactrs to use for this render are %text%.
 echo.
-echo Enter Y to continue and N to start over from the beginning.
 
+echo Press any key to continue... && pause >nul
+if exist %file_location%\%file_name% goto rename
+
+:areusure
+echo Enter Y to continue and N to start over from the beginning.
 choice /m "Are you sure that you wish to convert and save the file with the above settings?"
 if %errorlevel% neq 2 goto overview2
 if %errorlevel% neq 1 goto defaults
+goto overview2
+
+:file_name_2
+cls
+echo Make sure that the file name includes the .mp4 extension in the name you provide below.
+echo Also use a underscore in the places of a space where needed.
+echo.
+set /p file_name=Please enter the new file name: 
+goto overview
+
+:rename
+cls
+echo A file has been found with the same name as a different file in the destination folder.
+choice /m "Would you like to change it, proceeding will overwrite the previous file."
+if %errorlevel% neq 2 goto file_name_2
+if %errorlevel% neq 1 goto areusure
 
 :overview2
 REM This is the descriptors section
@@ -270,9 +292,9 @@ echo Current Render Settings:
 echo.
 echo name: %file_name% 
 echo fps: %fps%
-echo Start time (in seconds): %start_des%. 
-echo End time (in seconds): %end_des%. 
-echo Characters width: %video_width_des%.
+echo Start time (in seconds): %start_des%
+echo End time (in seconds): %end_des%
+echo Characters width: %video_width_des%
 echo Save location: %file_location_des%
 echo.
 echo *Please make sure to keep this window is focused as the program will stop working until you click back and press ENTER.*
@@ -287,5 +309,5 @@ call :activate || echo. && echo Please Re-enter the required information as acco
 
 :end
 choice /m "Installation complete! Do you want to navigate to the %file_name% destination folder?"
-if %errorlevel% neq 2 start "" explorer "%file_location%" && echo. && echo Press any key to exit the program. && pause >nul || echo If you ever somehow get this error please contact me and explain how to replicate it.
+if %errorlevel% neq 2 start "" explorer "%file_location%" && echo. && echo Press any key to exit the program. && pause >nul
 
