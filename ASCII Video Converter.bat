@@ -1,6 +1,7 @@
 @echo off
 TITLE Video to ASCII Converter
 
+REM ONLY COMPATABLE TO PYTHON VERSION 3
 
 REM video2chars is not owned by me and the original creator of this program can be found here: https://github.com/ryan4yin/video2chars
 
@@ -15,7 +16,7 @@ goto welcome
 
 :redirect
 cls
-echo *Python must be installed to use this program.*
+echo *Python 3.x must be installed to use this program.*
 echo Do you wish to be redirected to the Microsoft Store to install Python?
 echo You can of course install python yourself, but I cannot guarantee the program working.
 choice /m "Selecting Yes or No will exit the instant regardless, after installing, reopen this program."
@@ -33,7 +34,7 @@ pip install --upgrade pip
 exit /b
 
 :welcome
-echo Welcome to my Video file to ASCII character converter.
+echo Welcome to the CapedCrusader42's Video file to ASCII character converter.
 echo The purpose of this program is to allow for the simplistic conversion of a .mp4 file to the ASCII character set.
 echo I claim zero ownership of the software converting the file (video2chars).
 echo My only involvement was the creation of this tool.
@@ -43,6 +44,7 @@ echo https://forms.gle/hTXMjCSnfYXcVyw29
 echo.
 echo This program ONLY supports using the .mp4 file format.
 echo All settings changed configured will NOT persist after this program is closed.
+echo Python version 3.x must be installed, if python is not installed you will be redirected to the Microsoft Store.
 echo.
 
 echo *Once you proceed past this page the required software (video2chars) and its dependancies will be installed/updated.*
