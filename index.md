@@ -1,37 +1,14 @@
-## Welcome to GitHub Pages
+# Video-To-ASCII-Converter
+This is a cmd file that allows for the easy conversion of .mp4 video formats to ASCII characters.
+The software video2chars which is used in this program is created by ryan4yin and can be found here: https://github.com/ryan4yin/video2chars.
 
-You can use the [editor on GitHub](https://github.com/CapedCrusader42/Video-To-ASCII-Converter/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+*My only involvement is the creation of this batch file.*
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+This project is intended to be given to a friend so that he can easily use the video2chars program to convert his videos as well as a nice programming challenge for me as I am very much a greenhorn when it comes to programming.
 
-### Markdown
+At this point, I have most functionalities working and there may be some bug fixing that will be ironed out once I find them.
+If there are any errors that you have encountered please reach out and inform me at my anonymous bug report form: https://forms.gle/hTXMjCSnfYXcVyw29
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+Thank you for trying it out.
 
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/CapedCrusader42/Video-To-ASCII-Converter/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+*Please check the releases tab to get the most up to date news on updates to the program.*
