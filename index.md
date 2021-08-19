@@ -1,5 +1,3 @@
-<meta name="google-site-verification" content="LGYhEb2ImMFNMIFlmKCbC3eUZ8iSOy-5tg_glH_j5WA" />
-
 # Video-To-ASCII-Converter
 This is a cmd file that allows for the easy conversion of .mp4 video formats to ASCII characters.
 The software video2chars which is used in this program is created by ryan4yin and can be found here: https://github.com/ryan4yin/video2chars.
