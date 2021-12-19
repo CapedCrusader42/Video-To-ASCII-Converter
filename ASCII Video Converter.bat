@@ -16,35 +16,46 @@ goto welcome
 
 :redirect
 cls
-echo *Python 3.x must be installed to use this program.*
+echo *Python 3 or greater must be installed to use this program.*
 echo Do you wish to be redirected to the Microsoft Store to install Python?
 echo You can of course install python yourself, but I cannot guarantee the program working.
-choice /m "Selecting Yes or No will exit the instant regardless, after installing, reopen this program."
+echo If you chose to install Python on your own please make sure to add it to the system path.
+echo Selecting Yes or No will close the program regardless, after installing, reopen the file.
+choice /m "Do you wish to continue to the Microsoft Store?"
 if %errorlevel% neq 2 python && exit
 if %errorlevel% neq 1 exit
 exit /b
 
 :update
-PATH %PATH%;%UserProfile%\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0
-PATH %PATH%;%UserProfile%\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\Scripts
+for /f "delims=" %%a in ('dir /b /ad /on "%UserProfile%\AppData\Local\Packages\PythonSoftwareFoundation.Python*"') do set ver=%%a
+set "exec=%UserProfile%\AppData\Local\Packages\%ver%\LocalCache\local-packages\Python39\Scripts"
+PATH %PATH%;%exec%
+
+for /f "delims=" %%a in ('dir /b /ad /on "%UserProfile%\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python*"') do set name=%%a
+set "exec2=%UserProfile%\AppData\Local\Microsoft\WindowsApps\%name%"
+echo %exec2%
+
 python --version 3>NUL
 if errorlevel 1 call :redirect
 pip install video2chars
 pip install --upgrade pip
+pause >nul
 exit /b
 
 :welcome
-echo Welcome to the CapedCrusader42's Video file to ASCII character converter.
+echo Welcome to the CapedCrusader42's ACII Video Converter.
 echo The purpose of this program is to allow for the simplistic conversion of a .mp4 file to the ASCII character set.
-echo I claim zero ownership of the software converting the file (video2chars).
+echo I claim zero ownership of the software converting the file (video2chars), which belongs to ryan4vin.
 echo My only involvement was the creation of this tool.
 echo.
 echo If you encounter an error at any time please feel free to submit an anonymous bug report here: 
 echo https://forms.gle/hTXMjCSnfYXcVyw29
 echo.
 echo This program ONLY supports using the .mp4 file format.
-echo All settings changed configured will NOT persist after this program is closed.
-echo Python version 3.x must be installed, if python is not installed you will be redirected to the Microsoft Store.
+echo All settings changed or configured will NOT persist after this program is closed.
+echo.
+echo Python version 3.X must be installed, 
+echo If python version 3 or greater is not installed you will be redirected to the Microsoft Store.
 echo.
 
 echo *Once you proceed past this page the required software (video2chars) and its dependancies will be installed/updated.*
@@ -56,7 +67,7 @@ set /p=Press any key if you understand the terms above . . .
 echo.
 echo Please wait...
 echo.
-call :update || echo. && echo Update failed, please contact me at https://forms.gle/hTXMjCSnfYXcVyw29 with an explanation of the error that was provided. && pause >nul && exit
+call :update || echo. && echo Update failed, please contact me at https://forms.gle/hTXMjCSnfYXcVyw29 with an explanation of the error that was provided. && echo. && Continuing will exit the program. && pause >nul && exit
 
 
 REM =============================
@@ -65,7 +76,6 @@ REM =============================
 
 
 :defaults
-set file_path=%UserProfile%\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\Scripts
 set file_name=output.mp4
 set fps=24
 REM Programs default FPS is 10 and just makes it look not that great.
@@ -96,7 +106,7 @@ set /p file=Copy and paste the files location here:
 
 :view
 echo.
-dir %file% /A /Q || echo ERROR, this is not a valid file structure please press any key to retry. && pause >nul && goto file_select
+dir %file% /A /Q || echo ERROR, this is not a valid file structure. Please press any key to retry. && pause >nul && goto file_select
 echo.
 
 choice /m "Is this the correct file?"
@@ -252,6 +262,7 @@ echo Press any key to continue... && pause >nul
 if exist %file_location%\%file_name% goto rename
 
 :areusure
+echo.
 echo Enter Y to continue and N to start over from the beginning.
 choice /m "Are you sure that you wish to convert and save the file with the above settings?"
 if %errorlevel% neq 2 goto overview2
@@ -268,8 +279,12 @@ goto overview
 
 :rename
 cls
-echo A file has been found with the same name as a different file in the destination folder.
-choice /m "Would you like to change it, proceeding will overwrite the previous file."
+echo A file has been found with the same name in the destination folder.
+echo.
+echo File that you are trying to create: %file_name%
+echo Existing file path: %file_location%\%file_name%
+echo.
+choice /m "Would you like to change the file name? Proceeding will overwrite the previous file."
 if %errorlevel% neq 2 goto file_name_2
 if %errorlevel% neq 1 goto areusure
 
