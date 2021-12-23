@@ -27,13 +27,13 @@ if %errorlevel% neq 1 exit
 exit /b
 
 :update
-for /f "delims=" %%a in ('dir /b /ad /on "%UserProfile%\AppData\Local\Packages\PythonSoftwareFoundation.Python*"') do set ver=%%a
-set "exec=%UserProfile%\AppData\Local\Packages\%ver%\LocalCache\local-packages\Python39\Scripts"
+for /f "delims=" %%a in ('dir /b /ad /on "%UserProfile%\AppData\Local\Packages\PythonSoftwareFoundation.Python*"') do set name=%%a
+set "exec=%UserProfile%\AppData\Local\Packages\%name%\LocalCache\local-packages\Python39\Scripts"
 PATH %PATH%;%exec%
 
-for /f "delims=" %%a in ('dir /b /ad /on "%UserProfile%\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python*"') do set name=%%a
-set "exec2=%UserProfile%\AppData\Local\Microsoft\WindowsApps\%name%"
-echo %exec2%
+for /f "delims=" %%a in ('dir /b /ad /on "%UserProfile%\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python*"') do set name2=%%a
+set "exec2=%UserProfile%\AppData\Local\Microsoft\WindowsApps\%name2%"
+PATH %PATH%;%exec2%
 
 python --version 3>NUL
 if errorlevel 1 call :redirect
