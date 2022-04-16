@@ -252,7 +252,10 @@ REM echo The custom added charactrs to use for this render are %text%.
 echo.
 
 echo Press any key to continue... && pause >nul
-if exist %file_location%\%file_name% goto rename
+IF EXIST %userprofile%\Desktop\output.mp4 (
+       goto rename
+   )
+
 
 :areusure
 echo.
@@ -318,5 +321,6 @@ Exit /B
 call :activate || echo. && echo Please Re-enter the required information as according to the directions. && echo. && echo Press any key to retry... && pause >nul && goto defaults
 
 :end
+echo.
 choice /m "Installation complete! Do you want to navigate to the files' (%file_name%) destination folder?"
 if %errorlevel% neq 2 start "" explorer "%file_location%" && echo. && echo Press any key to exit the program. && pause >nul
