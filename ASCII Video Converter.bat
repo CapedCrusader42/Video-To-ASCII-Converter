@@ -17,7 +17,7 @@ goto welcome
 :redirect
 cls
 echo *Python 3 or greater must be installed to use this program.*
-echo Do you wish to be redirected to the Microsoft Store to install Python?
+echo Do you want to be redirected to the Microsoft Store to install Python?
 echo You can of course install python yourself, but I cannot guarantee the program working.
 echo If you chose to install Python on your own please make sure to add it to the system path.
 echo Selecting Yes or No will close the program regardless, after installing, reopen the file.
@@ -39,7 +39,7 @@ python --version 3>NUL
 if errorlevel 1 call :redirect
 pip install video2chars
 pip install --upgrade pip
-pause >nul
+
 exit /b
 
 :welcome
@@ -113,7 +113,6 @@ choice /m "Is this the correct file?"
 if %errorlevel% neq 2 goto begin
 if %errorlevel% neq 1 goto file_select && echo The entered file path does not exist. && echo. && echo Please view the hints to make sure that the formatting is correct. Press any key to continue. && pause >nul
 
-
 :begin
 cls
 
@@ -144,14 +143,10 @@ pause >nul
 cls
 goto begin
 
-
-goto file_select
-
-
 :file_name
 cls
 echo Make sure that the file name includes the .mp4 extension in the name you provide below.
-echo Also use a underscore in the places of a space where needed.
+echo Also use an underscore in the place of a space where needed.
 echo.
 set /p file_name=Please enter the new file name: 
 goto begin
@@ -159,7 +154,7 @@ goto begin
 :fps
 cls
 set /p fps=Enter the fps that you wish to render the file: 
-goto begin
+echo Changes saved, press any key to continue. && pause >nul && goto begin
 
 :width
 cls
@@ -172,7 +167,7 @@ if not defined video_width (
         goto width
     )
 
-goto begin
+echo Changes saved, press any key to continue. && pause >nul && goto begin
 
 :clipping
 cls
@@ -206,18 +201,16 @@ if not defined end (
 if %start% lss %end% echo. && echo The inputs have been saved and you can enter any key to continue. && pause >nul && goto begin
 echo "Please make sure that the start time is less than the end time. Press any key to continue. . ." && pause >nul && goto clipping
 
-goto begin
-
 :file_location
 cls
 set /p "file_location=Enter the full location path to put the file, leave empty for default (user desktop): "
-goto begin
+echo Changes saved, press any key to continue. && pause >nul && goto begin
 
 :color 
 cls
-Echo Choose Your Background color from the selection below.
+echo Choose Your Background color from the selection below.
 echo This selection has no effect on the output file and serves only as this tools color scheme.
-Echo.
+echo.
 echo 1. Whilte/Black
 echo 2. Black/Blue
 echo 3. Black/Red
@@ -314,8 +307,8 @@ echo End time (in seconds): %end_des%
 echo Characters width: %video_width_des%
 echo Save location: %file_location_des%
 echo.
-echo *Please make sure to keep this window is focused as the program will stop working until you click back and press ENTER.*
-echo The program may appear to not be inactive at first. Please wait and the program will start momentarily.
+echo *Please make sure to keep this window is focused as the program will stop until you click back and press the ENTER key*
+echo The program may appear to be inactive at first. Please wait and the program will start momentarily.
 echo.
 cd %file_location%
 video2chars%video_width% --fps %fps%%start%%end% --output %file_name% %file%
@@ -325,6 +318,5 @@ Exit /B
 call :activate || echo. && echo Please Re-enter the required information as according to the directions. && echo. && echo Press any key to retry... && pause >nul && goto defaults
 
 :end
-choice /m "Installation complete! Do you want to navigate to the %file_name% destination folder?"
+choice /m "Installation complete! Do you want to navigate to the files' (%file_name%) destination folder?"
 if %errorlevel% neq 2 start "" explorer "%file_location%" && echo. && echo Press any key to exit the program. && pause >nul
-
