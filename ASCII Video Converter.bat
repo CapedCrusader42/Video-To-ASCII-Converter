@@ -27,13 +27,16 @@ if %errorlevel% neq 1 exit
 exit /b
 
 :update
-for /f "delims=" %%a in ('dir /b /ad /on "%UserProfile%\AppData\Local\Packages\PythonSoftwareFoundation.Python*"') do set name=%%a
-set "exec=%UserProfile%\AppData\Local\Packages\%name%\LocalCache\local-packages\Python39\Scripts"
+for /f "delims=" %%a in ('dir /b /ad /on "%UserProfile%\AppData\Local\Packages\PythonSoftwareFoundation.Python*"') do set name1=%%a
+set "exec=%UserProfile%\AppData\Local\Packages\%name1%\LocalCache\local-packages"
+for /f "delims=" %%a in ('dir /b /ad /on "%exec%\Python3*"') do set name2=%%a
+set "exec=%UserProfile%\AppData\Local\Packages\%name1%\LocalCache\local-packages\%name2%\Scripts"
 PATH %PATH%;%exec%
 
-for /f "delims=" %%a in ('dir /b /ad /on "%UserProfile%\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python*"') do set name2=%%a
-set "exec2=%UserProfile%\AppData\Local\Microsoft\WindowsApps\%name2%"
+for /f "delims=" %%a in ('dir /b /ad /on "%UserProfile%\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python*"') do set name3=%%a
+set "exec2=%UserProfile%\AppData\Local\Microsoft\WindowsApps\%name3%"
 PATH %PATH%;%exec2%
+
 
 python --version 3>NUL
 if errorlevel 1 call :redirect
@@ -54,7 +57,7 @@ echo.
 echo This program ONLY supports using the .mp4 file format.
 echo All settings changed or configured will NOT persist after this program is closed.
 echo.
-echo Python version 3.X must be installed, 
+echo Python version 3.X+ must be installed, 
 echo If python version 3 or greater is not installed you will be redirected to the Microsoft Store.
 echo.
 
@@ -241,7 +244,6 @@ goto overview
 :overview
 cls
 echo Overview
-echo.
 echo name: %file_name% 
 echo fps: %fps%
 echo Start time (in seconds): %start%. 
