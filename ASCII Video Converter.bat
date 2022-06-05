@@ -27,6 +27,12 @@ if %errorlevel% neq 1 exit
 exit /b
 
 :update
+python --version 3>NUL
+if errorlevel 1 call :redirect
+pip install video2chars
+pip install --upgrade pip
+
+
 for /f "delims=" %%a in ('dir /b /ad /on "%UserProfile%\AppData\Local\Packages\PythonSoftwareFoundation.Python*"') do set name1=%%a
 set "exec=%UserProfile%\AppData\Local\Packages\%name1%\LocalCache\local-packages"
 for /f "delims=" %%a in ('dir /b /ad /on "%exec%\Python3*"') do set name2=%%a
@@ -37,19 +43,13 @@ for /f "delims=" %%a in ('dir /b /ad /on "%UserProfile%\AppData\Local\Microsoft\
 set "exec2=%UserProfile%\AppData\Local\Microsoft\WindowsApps\%name3%"
 PATH %PATH%;%exec2%
 
-
-python --version 3>NUL
-if errorlevel 1 call :redirect
-pip install video2chars
-pip install --upgrade pip
-
 exit /b
 
 :welcome
-echo Welcome to the CapedCrusader42's ACII Video Converter.
-echo The purpose of this program is to allow for the simplistic conversion of a .mp4 file to the ASCII character set.
+echo Welcome to CapedCrusader42's ACII Video Converter.
+echo The purpose of this program is to allow for the simplistic conversion of a .mp4 file to the ASCII characters.
 echo I claim zero ownership of the software converting the file (video2chars), which belongs to ryan4vin.
-echo My only involvement was the creation of this tool.
+echo My only involvement was the creation of this interface.
 echo.
 echo If you encounter an error at any time please feel free to submit an anonymous bug report here: 
 echo https://forms.gle/hTXMjCSnfYXcVyw29
@@ -57,14 +57,12 @@ echo.
 echo This program ONLY supports using the .mp4 file format.
 echo All settings changed or configured will NOT persist after this program is closed.
 echo.
-echo Python version 3.X+ must be installed, 
-echo If python version 3 or greater is not installed you will be redirected to the Microsoft Store.
+echo If python version 3.0 or greater is not installed you will be redirected to the Microsoft Store.
 echo.
-
 echo *Once you proceed past this page the required software (video2chars) and its dependancies will be installed/updated.*
+echo This installation process for video2chars and Python is exempt from not remaining persistant after the program closes.
 echo You will be notified of its completion.
 echo.
-
 echo.
 set /p=Press any key if you understand the terms above . . .
 echo.
@@ -77,11 +75,10 @@ REM =============================
 REM ======= Program Start =======
 REM =============================
 
-
 :defaults
 set file_name=output.mp4
 set fps=24
-REM Programs default FPS is 10 and just makes it look not that great.
+REM Programs default FPS is 10 and just makes it look not great.
 set video_width=
 set start=
 set end=
@@ -100,16 +97,16 @@ cls
 echo *The program video2chars has successfully been installed or updated*
 echo.
 echo Please enter the file directory below of the file you wish to convert.
-echo Be mindful that the formatting is correct or the command will not work.
+echo Be careful that the formatting is correct or the command will not work.
 echo.
-echo Hint1: Press and hold the shift key while right-clicking the file and select the option "Copy as path".
+echo Hint1: Press and hold the SHIFT key while right-clicking the file and select the option "Copy as path".
 echo Hint2: Then right-click in the command line window to paste.
 echo.
 set /p file=Copy and paste the files location here: 
 
 :view
 echo.
-dir %file% /A /Q || echo ERROR, this is not a valid file structure. Please press any key to retry. && pause >nul && goto file_select
+dir %file% /A /Q || echo. && echo ERROR, this is not a valid file structure. Please press any key to retry. && pause >nul && goto file_select
 echo.
 
 choice /m "Is this the correct file?"
@@ -132,13 +129,13 @@ echo 7.Finalize
 echo.
 set /p input0=Response: 
 
-if %input0% equ 1 goto file_name
-if %input0% equ 2 goto fps 
-if %input0% equ 3 goto width 
-if %input0% equ 4 goto clipping 
-if %input0% equ 5 goto file_location 
-if %input0% equ 6 goto color 
-if %input0% equ 7 goto confirmation 
+if %input0% equ "1" goto file_name
+if %input0% equ "2" goto fps 
+if %input0% equ "3" goto width 
+if %input0% equ "4" goto clipping 
+if %input0% equ "5" goto file_location 
+if %input0% equ "6" goto color 
+if %input0% equ "7" goto confirmation 
 echo Invalid selection!
 echo.
 echo Press any key to try again.
@@ -254,7 +251,7 @@ REM echo The custom added charactrs to use for this render are %text%.
 echo.
 
 echo Press any key to continue... && pause >nul
-IF EXIST %userprofile%\Desktop\output.mp4 (
+IF EXIST %file_location%\%file_name% (
        goto rename
    )
 
@@ -270,7 +267,7 @@ goto overview2
 :file_name_2
 cls
 echo Make sure that the file name includes the .mp4 extension in the name you provide below.
-echo Also use a underscore in the places of a space where needed.
+echo Use a underscore in the places of a space where needed.
 echo.
 set /p file_name=Please enter the new file name: 
 goto overview
