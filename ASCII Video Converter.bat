@@ -53,6 +53,8 @@ echo My only involvement was the creation of this interface.
 echo.
 echo If you encounter an error at any time please feel free to submit an anonymous bug report here: 
 echo https://forms.gle/hTXMjCSnfYXcVyw29
+echo The preferred method would be through posting an issue request in GitHub.
+echo *Please be as detailed as possible with a means of contact if further questions are required.*
 echo.
 echo This program ONLY supports using the .mp4 file format.
 echo All settings changed or configured will NOT persist after this program is closed.
@@ -64,7 +66,7 @@ echo This installation process for video2chars and Python is exempt from not rem
 echo You will be notified of its completion.
 echo.
 echo.
-set /p=Press any key if you understand the terms above . . .
+echo Press any key if you understand the terms above . . . && pause >nul
 echo.
 echo Please wait...
 echo.
@@ -78,7 +80,7 @@ REM =============================
 :defaults
 set file_name=output.mp4
 set fps=24
-REM Programs default FPS is 10 and just makes it look not great.
+REM Programs default FPS is 10 and just makes it look bad.
 set video_width=
 set start=
 set end=
@@ -102,7 +104,7 @@ echo.
 echo Hint1: Press and hold the SHIFT key while right-clicking the file and select the option "Copy as path".
 echo Hint2: Then right-click in the command line window to paste.
 echo.
-set /p file=Copy and paste the files location here: 
+set /p file=Copy and paste the files' location here: 
 
 :view
 echo.
@@ -120,22 +122,22 @@ echo Please enter the number corresponding to the selections below.
 echo *For the default settings or to continue press and enter the 7 key.*
 echo.
 echo 1.Converted file name (Default name "output.mp4")
-echo 2.Video FPS (Default 24 fps, will slightly increase render times)
-echo 3.Video character width (Default 80, will dramatically increase render times)
+echo 2.Video FPS (Default 24 fps, will slightly increase render times if changed)
+echo 3.Video character width (Default 80, will dramatically increase render times if changed)
 echo 4.Video length (Default, full video)
-echo 5.Converted file location (Where to put the finished product, default Desktop)
-echo 6.CMD text color (No real purpose)
+echo 5.Converted file location (Where to put the finished product, default is Desktop)
+echo 6.CMD text color (No real purpose, changes cli color)
 echo 7.Finalize
 echo.
 set /p input0=Response: 
 
-if %input0% equ "1" goto file_name
-if %input0% equ "2" goto fps 
-if %input0% equ "3" goto width 
-if %input0% equ "4" goto clipping 
-if %input0% equ "5" goto file_location 
-if %input0% equ "6" goto color 
-if %input0% equ "7" goto confirmation 
+if %input0% equ 1 goto file_name
+if %input0% equ 2 goto fps 
+if %input0% equ 3 goto width 
+if %input0% equ 4 goto clipping 
+if %input0% equ 5 goto file_location 
+if %input0% equ 6 goto color 
+if %input0% equ 7 goto confirmation 
 echo Invalid selection!
 echo.
 echo Press any key to try again.
@@ -208,18 +210,18 @@ echo Changes saved, press any key to continue. && pause >nul && goto begin
 
 :color 
 cls
-echo Choose Your Background color from the selection below.
+echo Choose Your Background/Text color from the selection below.
 echo This selection has no effect on the output file and serves only as this tools color scheme.
 echo.
-echo 1. Whilte/Black
-echo 2. Black/Blue
+echo 1. Black/Blue (Best)
+echo 2. White/Black
 echo 3. Black/Red
 echo 4. Black/Yellow
 echo.
 set /p "cl=Enter the numbered color here: " || goto begin
 
-if %cl% equ 1 color 70 && goto begin
-if %cl% equ 2 color 01 && goto begin
+if %cl% equ 1 color 01 && goto begin
+if %cl% equ 2 color 70 && goto begin
 if %cl% equ 3 color 04 && goto begin
 if %cl% equ 4 color 06 && goto begin
 echo Invalid selection!
@@ -241,6 +243,7 @@ goto overview
 :overview
 cls
 echo Overview
+echo.
 echo name: %file_name% 
 echo fps: %fps%
 echo Start time (in seconds): %start%. 
@@ -284,13 +287,13 @@ if %errorlevel% neq 2 goto file_name_2
 if %errorlevel% neq 1 goto areusure
 
 :overview2
-REM This is the descriptors section
+REM This is the viewable descriptors section
 echo %start%|findstr /x "[0123456789]*" && set "start_des=%start%" || set "start_des=not configured"
 echo %end%|findstr /x "[0123456789]*" && set "end_des=%end%" || set "end_des=not configured"
 echo %video_width%|findstr /x "[0123456789]*" && set "video_width_des=%video_width%" || set "video_width_des=Default (80)"
 echo %file_location%|findstr /x ".*" && set "file_location_des=%file_location%" || set "file_location_des=Default (%file_location%)"
 
-REM Used for the actual outputs
+REM Used for the actual command outputs
 echo %start%|findstr /x "[0123456789]*" && set "start= --t_start %start%" || set "start="
 echo %end%|findstr /x "[0123456789]*" && set "end= --t_end %end%" || set "end="
 echo %video_width%|findstr /x "[0123456789]*" && set "video_width= --chars_width %video_width%" || set "video_width="
@@ -309,8 +312,8 @@ echo End time (in seconds): %end_des%
 echo Characters width: %video_width_des%
 echo Save location: %file_location_des%
 echo.
-echo *Please make sure to keep this window is focused as the program will stop until you click back and press the ENTER key*
-echo The program may appear to be inactive at first. Please wait and the program will start momentarily.
+echo *Please keep this window in focus as the program may stop until you click back and press the ENTER key*
+echo Please wait as the program may appear inactive, but will begin momentarily.
 echo.
 cd %file_location%
 video2chars%video_width% --fps %fps%%start%%end% --output %file_name% %file%
