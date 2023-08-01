@@ -18,8 +18,9 @@ goto welcome
 cls
 echo *Python 3 or greater must be installed to use this program.*
 echo Do you want to be redirected to the Microsoft Store to install Python?
-echo You can of course install python yourself, but I cannot guarantee the program working.
+echo You can install python yourself, but I cannot guarantee the program working.
 echo If you chose to install Python on your own please make sure to add it to the system path.
+echo.
 echo Selecting Yes or No will close the program regardless, after installing, reopen the file.
 choice /m "Do you wish to continue to the Microsoft Store?"
 if %errorlevel% neq 2 python && exit
@@ -29,10 +30,11 @@ exit /b
 :update
 python --version 3>NUL
 if errorlevel 1 call :redirect
-pip install video2chars
 pip install --upgrade pip
+pip install video2chars
 
 
+REM Adds python to system PATH while also allowing future proof for folder name changes due to version updates.
 for /f "delims=" %%a in ('dir /b /ad /on "%UserProfile%\AppData\Local\Packages\PythonSoftwareFoundation.Python*"') do set name1=%%a
 set "exec=%UserProfile%\AppData\Local\Packages\%name1%\LocalCache\local-packages"
 for /f "delims=" %%a in ('dir /b /ad /on "%exec%\Python3*"') do set name2=%%a
@@ -79,8 +81,8 @@ REM =============================
 
 :defaults
 set file_name=output.mp4
-set fps=24
 REM Programs default FPS is 10 and just makes it look bad.
+set fps=24
 set video_width=
 set start=
 set end=
@@ -205,7 +207,10 @@ echo "Please make sure that the start time is less than the end time. Press any 
 
 :file_location
 cls
-set /p "file_location=Enter the full location path to put the file, leave empty for default (user desktop): "
+echo *Don't include Quotation marks ("") in the path if there are spaces, it will still work without them.*
+echo Enter the full location path to put the file,
+set /p "file_location=leave empty for default (user desktop): "
+echo .
 echo Changes saved, press any key to continue. && pause >nul && goto begin
 
 :color 
@@ -246,17 +251,20 @@ echo Overview
 echo.
 echo name: %file_name% 
 echo fps: %fps%
-echo Start time (in seconds): %start%. 
-echo End time (in seconds): %end%. 
-echo Characters width: %video_width%.
+echo Start time (in seconds): %start%
+echo End time (in seconds): %end%
+echo Characters width: %video_width%
 echo Save location: %file_location%
 REM echo The custom added charactrs to use for this render are %text%.
 echo.
 
+
 echo Press any key to continue... && pause >nul
-IF EXIST %file_location%\%file_name% (
-       goto rename
-   )
+IF EXIST "%file_location%\%file_name%" (
+    goto rename
+) ELSE (
+    goto areusure
+)
 
 
 :areusure
@@ -290,12 +298,14 @@ if %errorlevel% neq 1 goto areusure
 REM This is the viewable descriptors section
 echo %start%|findstr /x "[0123456789]*" && set "start_des=%start%" || set "start_des=not configured"
 echo %end%|findstr /x "[0123456789]*" && set "end_des=%end%" || set "end_des=not configured"
+
 echo %video_width%|findstr /x "[0123456789]*" && set "video_width_des=%video_width%" || set "video_width_des=Default (80)"
 echo %file_location%|findstr /x ".*" && set "file_location_des=%file_location%" || set "file_location_des=Default (%file_location%)"
 
 REM Used for the actual command outputs
 echo %start%|findstr /x "[0123456789]*" && set "start= --t_start %start%" || set "start="
 echo %end%|findstr /x "[0123456789]*" && set "end= --t_end %end%" || set "end="
+
 echo %video_width%|findstr /x "[0123456789]*" && set "video_width= --chars_width %video_width%" || set "video_width="
 REM echo %text%|findstr /x "[0123456789]*" && set "text=--pixel %text%" || set "text="
 cls
