@@ -30,8 +30,12 @@ exit /b
 :update
 python --version 3>NUL
 if errorlevel 1 call :redirect
-pip install --upgrade pip
+
 pip install video2chars
+pip install --upgrade pip
+
+REM new versions break python and needs to downgrade
+pip install pillow==9.5.0 
 
 
 REM Adds python to system PATH while also allowing future proof for folder name changes due to version updates.
@@ -64,7 +68,7 @@ echo.
 echo If python version 3.0 or greater is not installed you will be redirected to the Microsoft Store.
 echo.
 echo *Once you proceed past this page the required software (video2chars) and its dependancies will be installed/updated.*
-echo This installation process for video2chars and Python is exempt from not remaining persistant after the program closes.
+echo This installation process for video2chars and Python is removable once the program finishes.
 echo You will be notified of its completion.
 echo.
 echo.
@@ -98,6 +102,7 @@ goto file_select
 
 :file_select
 cls
+
 echo *The program video2chars has successfully been installed or updated*
 echo.
 echo Please enter the file directory below of the file you wish to convert.
@@ -124,8 +129,8 @@ echo Please enter the number corresponding to the selections below.
 echo *For the default settings or to continue press and enter the 7 key.*
 echo.
 echo 1.Converted file name (Default name "output.mp4")
-echo 2.Video FPS (Default 24 fps, will slightly increase render times if changed)
-echo 3.Video character width (Default 80, will dramatically increase render times if changed)
+echo 2.Video FPS (Default 24 fps, will slightly impact render times if changed)
+echo 3.Video character width (Default 80, will dramatically impact render times if changed)
 echo 4.Video length (Default, full video)
 echo 5.Converted file location (Where to put the finished product, default is Desktop)
 echo 6.CMD text color (No real purpose, changes cli color)
@@ -326,6 +331,7 @@ echo *Please keep this window in focus as the program may stop until you click b
 echo Please wait as the program may appear inactive, but will begin momentarily.
 echo.
 cd %file_location%
+
 video2chars%video_width% --fps %fps%%start%%end% --output %file_name% %file%
 Exit /B
 
@@ -333,6 +339,20 @@ Exit /B
 call :activate || echo. && echo Please Re-enter the required information as according to the directions. && echo. && echo Press any key to retry... && pause >nul && goto defaults
 
 :end
+REM remove installed files
+cls
+
+cd C:\Users\%username%\AppData\Local\Microsoft\WindowsApps
+for /f "delims=" %%a in ('dir /b /ad /on "%UserProfile%\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.*"') do set name5=%%a
+
+echo If you choose not to remove both or would only like to remove Video2chars select "No" and continue.
+choice /m "Would you like to remove all installed applications (Python and video2chars)?"
+if %errorlevel% neq 2 pip uninstall video2chars && rmdir /s %name5% && del python.exe && del python3*.exe && goto open
+
+choice /m "Would you like to remove ONLY Video2Chars?"
+if %errorlevel% neq 2 pip uninstall video2chars && goto open
+
+:open
 echo.
 choice /m "Installation complete! Do you want to navigate to the files' (%file_name%) destination folder?"
 if %errorlevel% neq 2 start "" explorer "%file_location%" && echo. && echo Press any key to exit the program. && pause >nul
