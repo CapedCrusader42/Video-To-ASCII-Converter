@@ -345,6 +345,9 @@ cls
 cd C:\Users\%username%\AppData\Local\Microsoft\WindowsApps
 for /f "delims=" %%a in ('dir /b /ad /on "%UserProfile%\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.*"') do set name5=%%a
 
+choice /m "Would you like any of the installed software for the program (video2chars and python)?"
+if %errorlevel% neq 1 goto open
+cls
 echo If you choose not to remove both or would only like to remove Video2chars select "No" and continue.
 choice /m "Would you like to remove all installed applications (Python and video2chars)?"
 if %errorlevel% neq 2 pip uninstall video2chars && rmdir /s %name5% && del python.exe && del python3*.exe && goto open
@@ -353,6 +356,7 @@ choice /m "Would you like to remove ONLY Video2Chars?"
 if %errorlevel% neq 2 pip uninstall video2chars && goto open
 
 :open
+cls
 echo.
 choice /m "Installation complete! Do you want to navigate to the files' (%file_name%) destination folder?"
 if %errorlevel% neq 2 start "" explorer "%file_location%" && echo. && echo Press any key to exit the program. && pause >nul
